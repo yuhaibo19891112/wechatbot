@@ -8,7 +8,9 @@ import (
 	"github.com/869413421/wechatbot/config"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
+	"time"
 )
 
 const BASEURL = "https://api.openai.com/v1/"
@@ -58,6 +60,21 @@ func Completions(msg string) (string, error) {
 	}
 	requestData, err := json.Marshal(requestBody)
 
+	tr := &http.Transport{
+		MaxIdleConns: 100,
+		Dial: func(netw, addr string) (net.Conn, error) {
+			conn, err := net.DialTimeout(netw, addr, time.Second*10) //设置建立连接超时
+			if err != nil {
+				return nil, err
+			}
+			err = conn.SetDeadline(time.Now().Add(time.Second * 10)) //设置发送接受数据超时
+			if err != nil {
+				return nil, err
+			}
+			return conn, nil
+		},
+	}
+
 	if err != nil {
 		return "", err
 	}
@@ -70,7 +87,7 @@ func Completions(msg string) (string, error) {
 	apiKey := config.LoadConfig().ApiKey
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+apiKey)
-	client := &http.Client{}
+	client := &http.Client{Transport: tr}
 	response, err := client.Do(req)
 	if err != nil {
 		return "", err
@@ -98,3 +115,4 @@ func Completions(msg string) (string, error) {
 	log.Printf("gpt response text: %s \n", reply)
 	return reply, nil
 }
+
