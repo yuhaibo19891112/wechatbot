@@ -46,9 +46,15 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	}
 	requestText = UserService.GetUserSessionContext(sender.ID()) + requestText
 	reply, err := gtp.Completions(requestText)
+	// 获取@我的用户
+	groupSender, err := msg.SenderInGroup()
+	if err != nil {
+		log.Printf("get sender in group error :%v \n", err)
+		return err
+	}
 	if err != nil {
 		log.Printf("gtp request error: %v \n", err)
-		_, err = msg.ReplyText(" 机器人找openai超时了，我要回答下个问题了。")
+		_, err = msg.ReplyText("@" + groupSender.NickName + " 机器人找openai超时了，我要回答下个问题了。")
 		if err != nil {
 			log.Printf("response group error: %v \n", err)
 		}
@@ -56,13 +62,6 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	}
 	if reply == "" {
 		return nil
-	}
-
-	// 获取@我的用户
-	groupSender, err := msg.SenderInGroup()
-	if err != nil {
-		log.Printf("get sender in group error :%v \n", err)
-		return err
 	}
 
 	// 回复@我的用户
