@@ -28,15 +28,17 @@ func NewGroupMessageHandler() MessageHandlerInterface {
 
 // ReplyText 发送文本消息到群
 func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
-	// 接收群消息
-	sender, err := msg.Sender()
-	group := openwechat.Group{sender}
-	log.Printf("Received Group %v Text Msg : %v", group.NickName, msg.Content)
 
 	// 不是@的不处理
 	if !msg.IsAt() {
 		return nil
 	}
+
+	// 接收群消息
+	sender, err := msg.Sender()
+	group := openwechat.Group{sender}
+
+	log.Printf("Received Group %v Text Msg : %v", group.NickName, msg.Content)
 
 	// 替换掉@文本，设置会话上下文，然后向GPT发起请求。
 	replaceText := "@" + sender.Self.NickName
@@ -44,12 +46,27 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	if requestText == "" {
 		return nil
 	}
-	requestText = UserService.GetUserSessionContext(sender.ID()) + requestText
+
+	// 获取@我的用户
+    groupSender, err := msg.SenderInGroup()
+    if err != nil {
+        log.Printf("get sender in group error :%v \n", err)
+        return err
+    }
+
+    requestText = UserService.GetUserSessionContext(sender.ID()) + requestText
 	reply, err := gtp.Completions(requestText)
-	
+
+	// 回复@我的用户
+    reply = strings.TrimSpace(reply)
+    reply = strings.Trim(reply, "\n")
+    // 设置上下文
+    UserService.SetUserSessionContext(sender.ID(), requestText, reply)
+    atText := "@" + groupSender.NickName + " "
+
 	if err != nil {
 		log.Printf("gtp request error: %v \n", err)
-		_, err = msg.ReplyText("机器人累了，我要休息下，很快就好")
+		_, err = msg.ReplyText(atText + "机器人去美国找OpenAI超时了，我要回答下个问题了。")
 		if err != nil {
 			log.Printf("response group error: %v \n", err)
 		}
@@ -58,22 +75,12 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	if reply == "" {
 		return nil
 	}
-	
-	// 获取@我的用户
-	groupSender, err := msg.SenderInGroup()
-	if err != nil {
-		log.Printf("get sender in group error :%v \n", err)
-		return err
-	}
 
-	// 回复@我的用户
-	reply = strings.TrimSpace(reply)
-	reply = strings.Trim(reply, "\n")
 	// 设置上下文
 	UserService.SetUserSessionContext(sender.ID(), requestText, reply)
-	atText := "@" + groupSender.NickName + " "
+
 	if strings.Contains(reply, "\n") {
-	   atText = atText + "\n"
+	    atText = atText + "\n"
 	}
 	replyText := atText + reply
 	_, err = msg.ReplyText(replyText)
