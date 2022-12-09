@@ -40,7 +40,7 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	reply, err := gtp.Completions(requestText)
 	if err != nil {
 		log.Printf("gtp request error: %v \n", err)
-		msg.ReplyText("机器人累了，我要休息下，很快就好")
+		msg.ReplyText("机器人累了要歇会儿，我很快就能V起来……")
 		return err
 	}
 	if reply == "" {
@@ -51,7 +51,7 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	reply = strings.TrimSpace(reply)
 	reply = strings.Trim(reply, "\n")
 	UserService.SetUserSessionContext(sender.ID(), requestText, reply)
-	reply = "本消息由 V起来 Bot回复：\n" + reply
+	reply = "本消息由 V起来Bot 回复：\n " + reply
 	_, err = msg.ReplyText(reply)
 	if err != nil {
 		log.Printf("response user error: %v \n", err)
