@@ -8,8 +8,10 @@ import (
 	"github.com/869413421/wechatbot/config"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -85,8 +87,10 @@ func Completions(msg string) (string, error) {
 	}
 
 	apiKey := config.LoadConfig().ApiKey
+	apiKeyArray := strings.Split(apiKey, ",")
+	randNum := rand.Intn(len(apiKeyArray))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Authorization", "Bearer "+ apiKeyArray[randNum])
 	client := &http.Client{Transport: tr}
 	response, err := client.Do(req)
 	if err != nil {
