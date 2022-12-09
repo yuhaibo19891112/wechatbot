@@ -61,7 +61,7 @@ func Completions(msg string) (string, error) {
 	requestData, err := json.Marshal(requestBody)
 
 	tr := &http.Transport{
-		MaxIdleConns: 100,
+		MaxIdleConns: 200,
 		Dial: func(netw, addr string) (net.Conn, error) {
 			conn, err := net.DialTimeout(netw, addr, time.Second*2) //设置建立连接超时
 			if err != nil {
