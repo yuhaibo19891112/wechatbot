@@ -49,7 +49,7 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	
 	if err != nil {
 		log.Printf("gtp request error: %v \n", err)
-		_, err = msg.ReplyText("机器人找openai超时了，我要回答下个问题了。")
+		_, err = msg.ReplyText("机器人累了，我要休息下，很快就好")
 		if err != nil {
 			log.Printf("response group error: %v \n", err)
 		}
