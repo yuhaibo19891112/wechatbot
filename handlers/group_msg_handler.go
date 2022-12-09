@@ -16,7 +16,8 @@ type GroupMessageHandler struct {
 // handle 处理消息
 func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	if msg.IsText() {
-		return g.ReplyText(msg)
+		go g.ReplyText(msg)
+		return nil
 	}
 	return nil
 }
