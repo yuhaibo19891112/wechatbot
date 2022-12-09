@@ -1,8 +1,7 @@
 #!/bin/sh
 
 #进程名称
-process_name=chatgpt-server-0.0.1-SNAPSHOT.jar
-
+process_name=main.go
 while [ 0 -eq 0 ]
 do
     ps -ef|grep $process_name |grep -v grep
@@ -11,7 +10,7 @@ do
     then
     echo ">>>process is stop,to start"
     #启动进程
-    nohup java -jar $process_name &
+    nohup go run $process_name &
     
     break
     else
