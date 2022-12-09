@@ -71,7 +71,10 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	reply = strings.Trim(reply, "\n")
 	// 设置上下文
 	UserService.SetUserSessionContext(sender.ID(), requestText, reply)
-	atText := "@" + groupSender.NickName
+	atText := "@" + groupSender.NickName + " "
+	if strings.Contains(reply, "\n") {
+	   atText = atText + "\n"
+	}
 	replyText := atText + reply
 	_, err = msg.ReplyText(replyText)
 	if err != nil {
