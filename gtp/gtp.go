@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -104,7 +105,7 @@ func Completions(msg string) (string, error) {
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		return string(response.StatusCode), errors.New(fmt.Sprintf("gtp api status code not equals 200,code is %s", string(body)))
+		return strconv.Itoa(response.StatusCode), errors.New(fmt.Sprintf("gtp api status code not equals 200,code is %d, msg %s", response.StatusCode, string(body)))
 	}
 	if err != nil {
 		return "", err
