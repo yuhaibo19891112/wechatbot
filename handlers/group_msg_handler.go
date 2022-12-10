@@ -101,7 +101,6 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 func warnGroup(msg *openwechat.Message) error{
 	self, err := msg.Bot.GetCurrentUser()
 	groups, err := self.Groups()
-	friends, err := self.Friends()
 	topGroup := groups.GetByNickName(config.LoadConfig().AlarmGroupName)
 	if topGroup != nil && warnGroupFlag{
 		topGroup.SendText("keys已过期，尽快重置")
