@@ -104,7 +104,7 @@ func Completions(msg string) (string, error) {
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		return "", errors.New(fmt.Sprintf("gtp api status code not equals 200,code is %s", string(body)))
+		return string(response.StatusCode), errors.New(fmt.Sprintf("gtp api status code not equals 200,code is %s", string(body)))
 	}
 	if err != nil {
 		return "", err
