@@ -71,7 +71,7 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 		log.Printf("gtp request error: %v \n", err)
 		errorTip := atText + "机器人去美国找OpenAI超时了，我要回答下个问题了。"
 		if reply == "429" {
-			warnFriend(msg)
+		    warnGroup(msg)
 		    errorTip = errorTip + "!!!!!!!"
 		}
 		_, err = msg.ReplyText(errorTip)
@@ -98,18 +98,13 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	return err
 }
 
-func warnFriend(msg *openwechat.Message) error{
+func warnGroup(msg *openwechat.Message) error{
 	self, err := msg.Bot.GetCurrentUser()
 	groups, err := self.Groups()
 	friends, err := self.Friends()
 	topGroup := groups.GetByNickName(config.LoadConfig().AlarmGroupName)
-	alarmUser := friends.GetByRemarkName(config.LoadConfig().AlarmUserName)
 	if topGroup != nil && warnGroupFlag{
 		topGroup.SendText("keys已过期，尽快重置")
-		warnUserFlg = false
-	}
-	if alarmUser != nil && warnUserFlg{
-		alarmUser.SendText("keys已过期，尽快重置")
 		warnUserFlg = false
 	}
 	return err
