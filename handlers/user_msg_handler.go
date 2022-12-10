@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/869413421/wechatbot/config"
 	"github.com/869413421/wechatbot/gtp"
 	"github.com/eatmoreapple/openwechat"
 	"log"
@@ -62,6 +63,17 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	_, err = msg.ReplyText(reply)
 	if err != nil {
 		log.Printf("response user error: %v \n", err)
+	}
+	return err
+}
+
+func warnFriend(msg *openwechat.Message) error{
+	self, err := msg.Bot.GetCurrentUser()
+	friends, err := self.Friends()
+	alarmUser := friends.GetByRemarkName(config.LoadConfig().AlarmUserName)
+	if alarmUser != nil && warnUserFlg{
+		alarmUser.SendText("keys已过期，尽快重置")
+		warnUserFlg = false
 	}
 	return err
 }
