@@ -13,6 +13,10 @@ type Configuration struct {
 	ApiKey string `json:"api_key"`
 	// 自动通过好友
 	AutoPass bool `json:"auto_pass"`
+	// 告警群 需要将该群保存到通讯录
+	AlarmGroupName string `json:"group_name"`
+	// 告警好友备注
+	AlarmUserName string `json:"user_remark_name"`
 }
 
 var config *Configuration
