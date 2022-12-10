@@ -51,6 +51,11 @@ type ChatGPTRequestBody struct {
 //-H "Authorization: Bearer your chatGPT key"
 //-d '{"model": "text-davinci-003", "prompt": "give me good song", "temperature": 0, "max_tokens": 7}'
 func Completions(msg string) (string, error) {
+	
+	if strings.Contains(msg, "台湾") || strings.Contains(msg, "习大大") || strings.Contains(msg, "台灣") || strings.Contains(msg, "習大大") {
+		return "", errors.New("error world")
+	}
+	
 	requestBody := ChatGPTRequestBody{
 		Model:            "text-davinci-003",
 		Prompt:           msg,
