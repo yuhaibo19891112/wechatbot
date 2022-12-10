@@ -8,6 +8,7 @@ import (
 )
 
 var _ MessageHandlerInterface = (*UserMessageHandler)(nil)
+var warnUserFlg = true
 
 // UserMessageHandler 私聊消息处理
 type UserMessageHandler struct {
@@ -43,6 +44,7 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 		log.Printf("gtp request error: %v \n", err)
 		errorTip := "机器人累了要歇会儿，我很快就能V起来……"
 		if reply == "429" {
+		    warnFriend(msg)
 		    errorTip = errorTip + "!!!!!!!"
 		}
 		msg.ReplyText(errorTip)
