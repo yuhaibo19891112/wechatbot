@@ -108,7 +108,7 @@ func downloadImg(finalUrl string, savePath string)  {
 	}
 	defer resp.Body.Close()
 	content, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	if err == nil {
 		ioutil.WriteFile(savePath, content, 0666)
 	}
 }
