@@ -2,10 +2,8 @@ package handlers
 
 import (
 	"github.com/869413421/wechatbot/config"
-	"github.com/869413421/wechatbot/gtp"
 	"github.com/eatmoreapple/openwechat"
 	"log"
-	"strings"
 )
 
 var _ MessageHandlerInterface = (*UserMessageHandler)(nil)
@@ -35,6 +33,18 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	sender, err := msg.Sender()
 	log.Printf("Received User %v Text Msg : %v", sender.NickName, msg.Content)
 
+
+    // 设置上下文，回复用户
+	requestText := msg.Content
+    reply := "不私聊，请进群体验。进群方式请点击：\n \n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww"
+	UserService.SetUserSessionContext(sender.ID(), requestText, reply)
+	_, err = msg.ReplyText(reply)
+	if err != nil {
+		log.Printf("response user error: %v \n", err)
+	}
+	return err
+
+/*
 	// 获取上下文，向GPT发起请求
 	requestText := strings.TrimSpace(msg.Content)
 	requestText = strings.Trim(msg.Content, "\n")
@@ -65,12 +75,13 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 		log.Printf("response user error: %v \n", err)
 	}
 	return err
+*/
 }
 
 func warnFriend(msg *openwechat.Message) error{
 	self, err := msg.Bot.GetCurrentUser()
 	friends, err := self.Friends()
-	alarmUser := friends.GetByRemarkName(config.Config.AlarmUserName)
+	alarmUser := friends.GetByRemarkName(config.LoadConfig().AlarmUserName)
 	if alarmUser != nil && warnUserFlg{
 		alarmUser.SendText("keys已过期，尽快重置")
 		warnUserFlg = false
