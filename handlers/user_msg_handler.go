@@ -3,7 +3,9 @@ package handlers
 import (
 	"github.com/869413421/wechatbot/config"
 	"github.com/eatmoreapple/openwechat"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -36,6 +38,7 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 
 
     // 设置上下文，回复用户
+	downloadImg(config.Config.QunUrl, "qun.jpg")
 	img, err := os.Open("qun.jpg")
 	requestText := msg.Content
 	reply := "不私聊，请进群体验。进群方式请点击：\n \n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww"
@@ -89,10 +92,21 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 func warnFriend(msg *openwechat.Message) error{
 	self, err := msg.Bot.GetCurrentUser()
 	friends, err := self.Friends()
-	alarmUser := friends.GetByRemarkName(config.LoadConfig().AlarmUserName)
+	alarmUser := friends.GetByRemarkName(config.Config.AlarmUserName)
 	if alarmUser != nil && warnUserFlg{
 		alarmUser.SendText("keys已过期，尽快重置")
 		warnUserFlg = false
 	}
 	return err
+}
+
+func downloadImg(finalUrl string, savePath string)  {
+	//读取url的信息，存入到文件
+	resp, err := http.Get(finalUrl)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	content, err := ioutil.ReadAll(resp.Body)
+	ioutil.WriteFile(savePath, content, 0666)
 }
