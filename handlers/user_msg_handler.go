@@ -4,6 +4,7 @@ import (
 	"github.com/869413421/wechatbot/config"
 	"github.com/eatmoreapple/openwechat"
 	"log"
+	"os"
 )
 
 var _ MessageHandlerInterface = (*UserMessageHandler)(nil)
@@ -35,10 +36,17 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 
 
     // 设置上下文，回复用户
+	img, err := os.Open("qun.jpg")
 	requestText := msg.Content
-    reply := "不私聊，请进群体验。进群方式请点击：\n \n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww"
+	reply := "不私聊，请进群体验。进群方式请点击：\n \n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww"
+	if img != nil {
+		reply = "不私聊，请进群体验。进群方式请扫下方二维码"
+	}
 	UserService.SetUserSessionContext(sender.ID(), requestText, reply)
 	_, err = msg.ReplyText(reply)
+	if img != nil {
+		_, err = msg.ReplyImage(img)
+	}
 	if err != nil {
 		log.Printf("response user error: %v \n", err)
 	}
