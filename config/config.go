@@ -24,6 +24,8 @@ type Configuration struct {
 	AlarmUserName string `json:"user_remark_name"`
 	// 敏感词
 	FilterName string `json:"filter_name"`
+	// 图片链接
+	QunUrl string `json:"remote_qun_url"`
 
 }
 
