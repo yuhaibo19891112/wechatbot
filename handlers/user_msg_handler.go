@@ -70,7 +70,7 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 func warnFriend(msg *openwechat.Message) error{
 	self, err := msg.Bot.GetCurrentUser()
 	friends, err := self.Friends()
-	alarmUser := friends.GetByRemarkName(config.LoadConfig().AlarmUserName)
+	alarmUser := friends.GetByRemarkName(config.Config-p;.AlarmUserName)
 	if alarmUser != nil && warnUserFlg{
 		alarmUser.SendText("keys已过期，尽快重置")
 		warnUserFlg = false
