@@ -53,9 +53,22 @@ type ChatGPTRequestBody struct {
 //-d '{"model": "text-davinci-003", "prompt": "give me good song", "temperature": 0, "max_tokens": 7}'
 func Completions(msg string) (string, error) {
 	
-	if strings.Contains(msg, "台湾") || strings.Contains(msg, "习大大") || strings.Contains(msg, "台灣") || strings.Contains(msg, "習大大") {
-		return "", errors.New("error world")
+	if strings.Contains(msg, "台湾") ||
+	   strings.Contains(msg, "习大大") ||
+	   strings.Contains(msg, "习近平") ||
+	   strings.Contains(msg, "邓小平") ||
+	   strings.Contains(msg, "毛泽东") ||
+	   strings.Contains(msg, "冰毒") ||
+	   strings.Contains(msg, "政治") ||
+	   strings.Contains(msg, "推翻") ||
+	   strings.Contains(msg, "台灣") ||
+	   strings.Contains(msg, "習大大") {
+		return "", errors.New("error words")
 	}
+
+    // 加一个中文符号将提问强制结束，不做"接话机器"
+    // 测试过，即使标点重复或者错误，语义不受影响。
+	msg = msg + "。"
 	
 	requestBody := ChatGPTRequestBody{
 		Model:            "text-davinci-003",
@@ -69,13 +82,13 @@ func Completions(msg string) (string, error) {
 	requestData, err := json.Marshal(requestBody)
 
 	tr := &http.Transport{
-		MaxIdleConns: 200,
+		MaxIdleConns: 300,
 		Dial: func(netw, addr string) (net.Conn, error) {
 			conn, err := net.DialTimeout(netw, addr, time.Second*2) //设置建立连接超时
 			if err != nil {
 				return nil, err
 			}
-			err = conn.SetDeadline(time.Now().Add(time.Second * 15)) //设置发送接受数据超时
+			err = conn.SetDeadline(time.Now().Add(time.Second * 16)) //设置发送接受数据超时
 			if err != nil {
 				return nil, err
 			}
