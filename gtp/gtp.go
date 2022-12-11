@@ -105,7 +105,7 @@ func Completions(msg string) (string, error) {
 		return "", err
 	}
 
-	apiKey := config.LoadConfig().ApiKey
+	apiKey := config.Config.ApiKey
 	apiKeyArray := strings.Split(apiKey, ",")
 	randNum := rand.Intn(len(apiKeyArray))
 	req.Header.Set("Content-Type", "application/json")
