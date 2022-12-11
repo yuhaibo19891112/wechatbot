@@ -48,6 +48,10 @@ func SetToLocal() {
 	configBody := RemoteConfigHttp(Config.RemoteUrl)
 
 	botNum := fetchSetUpParam()
+	
+	if configBody == nil || botNum == "" {
+		return
+	}
 
 	if "1" == botNum {
 		Config.ApiKey = configBody.ApiKey1
