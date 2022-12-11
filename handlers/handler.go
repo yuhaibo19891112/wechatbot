@@ -44,7 +44,7 @@ func Handler(msg *openwechat.Message) {
 	// 好友申请
 	if msg.IsFriendAdd() {
 		if config.LoadConfig().AutoPass {
-			_, err := msg.Agree("你好我是基于chatGPT引擎开发的微信机器人，你可以向我提问任何问题。")
+			_, err := msg.Agree("你好我是【V起来】微信群聊版 ChatGPT机器人。\n 请进群体验，私聊小窗不再回复：https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
 			if err != nil {
 				log.Fatalf("add friend agree error : %v", err)
 				return
@@ -52,6 +52,6 @@ func Handler(msg *openwechat.Message) {
 		}
 	}
 
-	// 私聊
-	handlers[UserHandler].handle(msg)
+	// 私聊（20221211先禁止）
+	// handlers[UserHandler].handle(msg)
 }
