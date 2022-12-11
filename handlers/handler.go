@@ -52,6 +52,6 @@ func Handler(msg *openwechat.Message) {
 		}
 	}
 
-	// 私聊（20221211先禁止）
-	// handlers[UserHandler].handle(msg)
+	// 私聊
+	handlers[UserHandler].handle(msg)
 }
