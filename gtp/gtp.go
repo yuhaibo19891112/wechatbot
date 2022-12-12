@@ -53,16 +53,7 @@ type ChatGPTRequestBody struct {
 //-d '{"model": "text-davinci-003", "prompt": "give me good song", "temperature": 0, "max_tokens": 7}'
 func Completions(msg string) (string, error) {
 	
-	if strings.Contains(msg, "台湾") ||
-	   strings.Contains(msg, "习大大") ||
-	   strings.Contains(msg, "习近平") ||
-	   strings.Contains(msg, "邓小平") ||
-	   strings.Contains(msg, "毛泽东") ||
-	   strings.Contains(msg, "冰毒") ||
-	   strings.Contains(msg, "政治") ||
-	   strings.Contains(msg, "推翻") ||
-	   strings.Contains(msg, "台灣") ||
-	   strings.Contains(msg, "習大大") {
+	if filterWords(msg) {
 		return "", errors.New("error words")
 	}
 
@@ -137,5 +128,34 @@ func Completions(msg string) (string, error) {
 	}
 	log.Printf("gpt response text: %s \n", reply)
 	return reply, nil
+}
+
+func filterWords(msg string) bool  {
+	if strings.Contains(msg, "台湾") ||
+		strings.Contains(msg, "习大大") ||
+		strings.Contains(msg, "习近平") ||
+		strings.Contains(msg, "邓小平") ||
+		strings.Contains(msg, "毛泽东") ||
+		strings.Contains(msg, "冰毒") ||
+		strings.Contains(msg, "政治") ||
+		strings.Contains(msg, "推翻") ||
+		strings.Contains(msg, "台灣") ||
+		strings.Contains(msg, "習大大") {
+		return false
+	}
+	remoteWords := config.Config.FilterName
+	if remoteWords == "" {
+		return true
+	}
+	words := strings.Split(remoteWords, ",")
+	if len(words) == 0 {
+		return true
+	}
+	for i := 0; i < len(words); i++ {
+		if strings.Contains(msg, words[i]) {
+			return false
+		}
+	}
+	return true
 }
 
