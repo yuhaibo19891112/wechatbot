@@ -21,7 +21,7 @@ func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	// 自己加入群聊
 	if selfJoinGroup(msg) {
 		img, err := os.Open("vqilai.jpg")
-		if err == nil {
+		if err != nil {
 			msg.ReplyText("大家好，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！更多体验请进入V起来官网微信群体验，进群方式：：https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
 			return nil
 		}
