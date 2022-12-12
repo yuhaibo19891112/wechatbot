@@ -22,10 +22,10 @@ func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	if selfJoinGroup(msg) {
 		img, err := os.Open("vqilai.jpg")
 		if err != nil {
-			msg.ReplyText("大家好，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！更多体验请进入V起来官网微信群体验，进群方式：：https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
+			msg.ReplyText("家人们朋友们，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！你可以@我，提任何问题。\n\n防止失联，请一定收藏关注我的公众号哦[红包]\n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
 			return nil
 		}
-		msg.ReplyText("大家好，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！更多体验请进入V起来官网微信群体验，进群方式详见下图")
+		msg.ReplyText("家人们朋友们，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！你可以@我，提任何问题。\n\n防止失联，请一定收藏关注我的公众号哦[红包]")
 		msg.ReplyImage(img)
 		return nil
 	}
