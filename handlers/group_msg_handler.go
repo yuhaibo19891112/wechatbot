@@ -17,6 +17,9 @@ type GroupMessageHandler struct {
 
 // handle 处理消息
 func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
+	if joinGroup(msg) && config.Config.JoinGroupTip != "" {
+		msg.ReplyText(config.Config.JoinGroupTip)
+	}
 	if msg.IsText() {
 		go g.ReplyText(msg)
 		return nil
@@ -31,7 +34,6 @@ func NewGroupMessageHandler() MessageHandlerInterface {
 
 // ReplyText 发送文本消息到群
 func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
-
 	// 不是@的不处理
 	if !msg.IsAt() {
 		return nil
@@ -107,4 +109,8 @@ func warnGroup(msg *openwechat.Message) error{
 		warnUserFlg = false
 	}
 	return err
+}
+
+func joinGroup(m *openwechat.Message) bool {
+	return m.IsSystem() &&(strings.Contains(m.Content, "加入了群聊") || strings.Contains(m.Content, "加入群聊")) && m.IsSendByGroup()
 }
