@@ -41,9 +41,9 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	downloadImg(config.Config.QunUrl, "qun.jpg")
 	img, err := os.Open("qun.jpg")
 	requestText := msg.Content
-	reply := "不私聊，请进群体验。进群方式请点击：\n \n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww"
+	reply := "自动回复：由于线路限流，暂时关闭私聊功能，非常抱歉！\n \n不过我们仍然支持群聊，建议您邀请朋友一起关注【V起来】，然后拉机器人进群，进行群聊。或者直接加入官方群体>验，关注进群方式请点击：\n \nhttps://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww"
 	if img != nil {
-		reply = "不私聊，请进群体验。进群方式请扫下方二维码"
+		reply = "自动回复：由于线路限流，暂时关闭私聊功能，非常抱歉！\n \n不过我们仍然支持群聊，建议您邀请朋友一起关注【V起来】，然后拉机器人进群，进行群聊。或者直接加入官方群体验。进群方式请扫下方二维码"
 	}
 	UserService.SetUserSessionContext(sender.ID(), requestText, reply)
 	_, err = msg.ReplyText(reply)
