@@ -144,7 +144,7 @@ func filterWords(msg string) bool  {
 		return true
 	}
 	remoteWords := config.Config.FilterName
-	if remoteWords == "" {
+	if remoteWords == "" || strings.TrimSpace(remoteWords) == ""{
 		return false
 	}
 	words := strings.Split(remoteWords, ",")
@@ -152,7 +152,7 @@ func filterWords(msg string) bool  {
 		return false
 	}
 	for i := 0; i < len(words); i++ {
-		if strings.Contains(msg, words[i]) {
+		if strings.TrimSpace(words[i]) != "" && strings.Contains(msg, words[i]) {
 			return true
 		}
 	}
