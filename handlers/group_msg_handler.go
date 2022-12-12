@@ -130,5 +130,5 @@ func joinGroup(m *openwechat.Message) bool {
 }
 
 func selfJoinGroup(m *openwechat.Message) bool {
-	return m.IsSystem() && (strings.Contains(m.Content, "你通过扫描二维码加入群聊") || strings.Contains(m.Content, "邀请你加入了群聊"))
+	return m.IsSystem() && (strings.Contains(m.Content, "你通过扫描二维码加入群聊") || strings.Contains(m.Content, "邀请你加入了群聊") || strings.Contains(m.Content, "邀请你"))
 }
