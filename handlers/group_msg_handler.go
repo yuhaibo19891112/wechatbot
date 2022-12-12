@@ -59,14 +59,14 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
         return err
     }
 
-    requestText = UserService.GetUserSessionContext(sender.ID()) + requestText
+    requestText = UserService.GetUserSessionContext(groupSender.NickName) + requestText
 	reply, err := gtp.Completions(requestText)
 
 	// 回复@我的用户
     reply = strings.TrimSpace(reply)
     reply = strings.Trim(reply, "\n")
     // 设置上下文
-    UserService.SetUserSessionContext(sender.ID(), requestText, reply)
+    UserService.SetUserSessionContext(groupSender.NickName, requestText, reply)
     atText := "@" + groupSender.NickName + " "
 
 	if err != nil {
@@ -87,7 +87,7 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	}
 
 	// 设置上下文
-	UserService.SetUserSessionContext(sender.ID(), requestText, reply)
+	UserService.SetUserSessionContext(groupSender.NickName, requestText, reply)
 
 	if strings.Contains(reply, "\n") {
 	    atText = atText + "\n"
