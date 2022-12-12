@@ -19,21 +19,21 @@ type GroupMessageHandler struct {
 // handle 处理消息
 func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	// 自己加入群聊
-	jiekeTip := config.Config.JiekeTip
-	if selfJoinGroup(msg) && jiekeTip != ""{
+	joinTip := config.Config.JoinGroupTip
+	if selfJoinGroup(msg) && joinTip != ""{
 		img, err := os.Open("vqilai.jpg")
 		if err != nil {
-			msg.ReplyText( jiekeTip + "\n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
+			msg.ReplyText( joinTip + "\n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
 			return nil
 		}
-		msg.ReplyText(jiekeTip)
+		msg.ReplyText(joinTip)
 		msg.ReplyImage(img)
 		return nil
 	}
 	// 别人加入群聊
 	sender, _ := msg.Sender()
-	if joinGroup(msg) && config.Config.JoinGroupTip != "" && strings.Contains(sender.NickName, "V起来") {
-		msg.ReplyText(config.Config.JoinGroupTip)
+	if joinGroup(msg) && config.Config.JiekeTip != "" && strings.Contains(sender.NickName, "V起来") {
+		msg.ReplyText(config.Config.JiekeTip)
 		return nil
 	}
 	if msg.IsText() {
