@@ -29,6 +29,8 @@ type Configuration struct {
 	QunUrl string `json:"remote_qun_url"`
 	//进群提示语
 	JoinGroupTip string `json:"join_group_tip"`
+	// 接客语
+	JiekeTip string `json:"jieke_tip"`
 
 }
 
@@ -125,6 +127,11 @@ func SetToLocal() {
 		log.Println("bot"+ botNum +"：JoinGroupTip有变更! " + Config.JoinGroupTip + " ===> " + configBody.JoinGroupTip)
 		Config.JoinGroupTip = configBody.JoinGroupTip
 	}
+
+	if ""!= configBody.JiekeTip && Config.JiekeTip != configBody.JiekeTip {
+		log.Println("bot"+ botNum +"：JiekeTip有变更! " + Config.JiekeTip + " ===> " + configBody.JiekeTip)
+		Config.JiekeTip = configBody.JiekeTip
+	}
 }
 
 // LoadConfig 加载配置
@@ -176,6 +183,8 @@ type RemoteConfigResponseBody struct {
 	JoinGroupTip string `json:"join_group_tip"`
 	// 图片链接
 	QunUrl string `json:"remote_qun_url"`
+	// 接客语
+	JiekeTip string `json:"jieke_tip"`
 }
 
 // RemoteConfigHttp 远程配置请求
