@@ -47,7 +47,6 @@ func Handler(msg *openwechat.Message) {
 			_, err := msg.Agree("你好呀！谢谢关注。我是【V起来】微信群聊版 ChatGPT机器人。很高兴和你成为朋友！")
 			if err != nil {
 				log.Fatalf("add friend agree error : %v", err)
-				return
 			}
 		}
 	}
