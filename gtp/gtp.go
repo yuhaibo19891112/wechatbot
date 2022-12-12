@@ -141,21 +141,21 @@ func filterWords(msg string) bool  {
 		strings.Contains(msg, "推翻") ||
 		strings.Contains(msg, "台灣") ||
 		strings.Contains(msg, "習大大") {
-		return false
+		return true
 	}
 	remoteWords := config.Config.FilterName
 	if remoteWords == "" {
-		return true
+		return false
 	}
 	words := strings.Split(remoteWords, ",")
 	if len(words) == 0 {
-		return true
+		return false
 	}
 	for i := 0; i < len(words); i++ {
 		if strings.Contains(msg, words[i]) {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
