@@ -5,6 +5,7 @@ import (
 	"github.com/869413421/wechatbot/gtp"
 	"github.com/eatmoreapple/openwechat"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -17,8 +18,21 @@ type GroupMessageHandler struct {
 
 // handle 处理消息
 func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
+	// 自己加入群聊
+	if selfJoinGroup(msg) {
+		img, err := os.Open("vqilai.jpg")
+		if err == nil {
+			msg.ReplyText("大家好，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！更多体验请进入V起来官网微信群体验，进群方式：：https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
+			return nil
+		}
+		msg.ReplyText("大家好，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！更多体验请进入V起来官网微信群体验，进群方式详见下图")
+		msg.ReplyImage(img)
+		return nil
+	}
+	// 别人加入群聊
 	if joinGroup(msg) && config.Config.JoinGroupTip != "" {
 		msg.ReplyText(config.Config.JoinGroupTip)
+		return nil
 	}
 	if msg.IsText() {
 		go g.ReplyText(msg)
@@ -113,4 +127,8 @@ func warnGroup(msg *openwechat.Message) error{
 
 func joinGroup(m *openwechat.Message) bool {
 	return m.IsSystem() &&(strings.Contains(m.Content, "加入了群聊") || strings.Contains(m.Content, "加入群聊")) && m.IsSendByGroup()
+}
+
+func selfJoinGroup(m *openwechat.Message) bool {
+	return m.IsSystem() && (strings.Contains(m.Content, "你通过扫描二维码加入群聊") || strings.Contains(m.Content, "邀请你加入了群聊"))
 }
