@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -31,13 +32,16 @@ type Configuration struct {
 
 }
 
+// Config 公共参数
 var Config *Configuration
+// once 私有参数
 var once sync.Once
 
+// Timer 定时器
 func Timer() {
 	SetToLocal()
 
-	ticker := time.NewTicker(30 * time.Second)
+	ticker := time.NewTicker(45 * time.Second)
 	defer ticker.Stop()
 
 	for range ticker.C {
@@ -45,62 +49,82 @@ func Timer() {
 	}
 }
 
-
+// SetToLocal 远程本地比较赋值
 func SetToLocal() {
+
 	LoadConfig()
 
 	configBody := RemoteConfigHttp(Config.RemoteUrl)
 
 	botNum := fetchSetUpParam()
-	
+
 	if configBody == nil || botNum == "" {
 		return
 	}
 
-	if "1" == botNum {
+	// 机器人判断
+	if "1" == botNum && Config.ApiKey != configBody.ApiKey1 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey1)
 		Config.ApiKey = configBody.ApiKey1
 	}
-	if "2" == botNum {
+	if "2" == botNum && Config.ApiKey != configBody.ApiKey2 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey2)
 		Config.ApiKey = configBody.ApiKey2
 	}
-	if "3" == botNum {
+	if "3" == botNum && Config.ApiKey != configBody.ApiKey3 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey3)
 		Config.ApiKey = configBody.ApiKey3
 	}
-	if "4" == botNum {
+	if "4" == botNum && Config.ApiKey != configBody.ApiKey4 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey4)
 		Config.ApiKey = configBody.ApiKey4
 	}
-	if "5" == botNum {
+	if "5" == botNum && Config.ApiKey != configBody.ApiKey5 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey5)
 		Config.ApiKey = configBody.ApiKey5
 	}
-	if "6" == botNum {
+	if "6" == botNum && Config.ApiKey != configBody.ApiKey6 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey6)
 		Config.ApiKey = configBody.ApiKey6
 	}
-	if "7" == botNum {
+	if "7" == botNum && Config.ApiKey != configBody.ApiKey7 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey7)
 		Config.ApiKey = configBody.ApiKey7
 	}
-	if "8" == botNum {
+	if "8" == botNum && Config.ApiKey != configBody.ApiKey8 {
+		log.Println("bot"+ botNum +"：apikey有变更! " + Config.ApiKey + " ===> " + configBody.ApiKey8)
 		Config.ApiKey = configBody.ApiKey8
 	}
 
-	Config.AutoPass = configBody.AutoPass
-	Config.FilterName = configBody.FilterWords
-	if ""!= configBody.GroupName {
+	if Config.AutoPass != configBody.AutoPass {
+		log.Println("bot"+ botNum +"：autoPass有变更! " + strconv.FormatBool(Config.AutoPass) + " ===> " + strconv.FormatBool(configBody.AutoPass))
+		Config.AutoPass = configBody.AutoPass
+	}
+
+	if Config.FilterName != configBody.FilterWords {
+		log.Println("bot"+ botNum +"：filterWords有变更! " + Config.FilterName + " ===> " + configBody.FilterWords)
+		Config.FilterName = configBody.FilterWords
+	}
+
+	if ""!= configBody.GroupName && Config.AlarmGroupName != configBody.GroupName {
+		log.Println("bot"+ botNum +"：alarmGroupName有变更! " + Config.AlarmGroupName + " ===> " + configBody.GroupName)
 		Config.AlarmGroupName = configBody.GroupName
 	}
 
-	if ""!= configBody.UserRemarkName {
+	if ""!= configBody.UserRemarkName && Config.AlarmUserName != configBody.UserRemarkName {
+		log.Println("bot"+ botNum +"：alarmUserName有变更! " + Config.AlarmUserName + " ===> " + configBody.UserRemarkName)
 		Config.AlarmUserName = configBody.UserRemarkName
 	}
-}
 
-// 获取启动参数
-func fetchSetUpParam() string {
-	for i ,v := range os.Args {
-		if 1 == i {
-			return v
-		}
+	if ""!= configBody.QunUrl && Config.QunUrl != configBody.QunUrl {
+		log.Println("bot"+ botNum +"：QunUrl有变更! " + Config.QunUrl + " ===> " + configBody.QunUrl)
+		Config.QunUrl = configBody.QunUrl
 	}
-	return "1"
+
+	if ""!= configBody.JoinGroupTip && Config.JoinGroupTip != configBody.JoinGroupTip {
+		log.Println("bot"+ botNum +"：JoinGroupTip有变更! " + Config.JoinGroupTip + " ===> " + configBody.JoinGroupTip)
+		Config.JoinGroupTip = configBody.JoinGroupTip
+	}
 }
 
 // LoadConfig 加载配置
@@ -134,8 +158,7 @@ func LoadConfig() *Configuration {
 	return Config
 }
 
-
-// RemoteConfigResponseBody 请求体
+// RemoteConfigResponseBody 远程config.json参数体
 type RemoteConfigResponseBody struct {
 	ApiKey1 string `json:"api_key-1"`
 	ApiKey2 string `json:"api_key-2"`
@@ -149,8 +172,13 @@ type RemoteConfigResponseBody struct {
 	GroupName string `json:"group_name"`
 	FilterWords string `json:"filter_words"`
 	UserRemarkName string `json:"user_remark_name"`
+	//进群提示语
+	JoinGroupTip string `json:"join_group_tip"`
+	// 图片链接
+	QunUrl string `json:"remote_qun_url"`
 }
 
+// RemoteConfigHttp 远程配置请求
 func RemoteConfigHttp(remoteUrl string) *RemoteConfigResponseBody {
 
 	resp, err := http.Get(remoteUrl)
@@ -171,7 +199,6 @@ func RemoteConfigHttp(remoteUrl string) *RemoteConfigResponseBody {
 	}
 
 	remoteConfigBody := &RemoteConfigResponseBody{}
-	log.Println(string(respBody))
 	err = json.Unmarshal(respBody, remoteConfigBody)
 
 	if err != nil {
@@ -179,4 +206,14 @@ func RemoteConfigHttp(remoteUrl string) *RemoteConfigResponseBody {
 	}
 
 	return remoteConfigBody
+}
+
+// fetchSetUpParam 获取启动参数
+func fetchSetUpParam() string {
+	for i ,v := range os.Args {
+		if 1 == i {
+			return v
+		}
+	}
+	return "1"
 }
