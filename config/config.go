@@ -26,6 +26,8 @@ type Configuration struct {
 	FilterName string `json:"filter_name"`
 	// 图片链接
 	QunUrl string `json:"remote_qun_url"`
+	//进群提示语
+	JoinGroupTip string `json:"join_group_tip"`
 
 }
 
