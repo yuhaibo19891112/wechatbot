@@ -128,6 +128,12 @@ func warnGroup(msg *openwechat.Message) error{
 		topGroup.SendText("keys已过期，尽快重置")
 		warnGroupFlag = false
 	}
+	friends, err := self.Friends()
+	alarmUser := friends.GetByRemarkName(config.Config.AlarmUserName)
+	if alarmUser != nil && warnUserFlg{
+		alarmUser.SendText("keys已过期，尽快重置")
+		warnUserFlg = false
+	}
 	return err
 }
 
