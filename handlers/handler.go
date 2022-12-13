@@ -46,7 +46,7 @@ func Handler(msg *openwechat.Message) {
 		if config.Config.AutoPass {
 			_, err := msg.Agree("你好我是【V起来】微信群聊版 ChatGPT机器人。\n 请进群体验，私聊小窗不再回复：https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
 			if err != nil {
-				log.Fatalf("add friend agree error : %v", err)
+				log.Printf("add friend agree error : %v", err)
 				return
 			}
 		}
