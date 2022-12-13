@@ -32,7 +32,7 @@ func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	}
 	// 别人加入群聊
 	sender, _ := msg.Sender()
-	if joinGroup(msg) && config.Config.JiekeTip != "" && strings.Contains(sender.NickName, "V起来") {
+	if joinGroup(msg) && config.Config.JiekeTip != "" && (strings.HasPrefix(sender.NickName, "V起来") || strings.HasPrefix(sender.NickName, "OKR之剑")) {
 		msg.ReplyText(config.Config.JiekeTip)
 		return nil
 	}
