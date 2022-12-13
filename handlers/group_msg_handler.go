@@ -22,7 +22,11 @@ func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	// 自己加入群聊
 	joinTip := config.Config.JoinGroupTip
 	if selfJoinGroup(msg) && joinTip != ""{
-		img, err := os.Open("vqilai.jpg")
+		downloadImg(config.Config.QunUrl, "qun.jpg")
+		img, err := os.Open("qun.jpg")
+		if err != nil {
+			log.Printf("获取qun.jpg图片异常， %v", err)
+		}
 		if err != nil {
 			msg.ReplyText( joinTip + "\n https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
 			return nil
