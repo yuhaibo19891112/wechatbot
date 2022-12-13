@@ -88,6 +88,10 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	if err != nil {
 		log.Printf("gtp request error: %v \n", err)
 		errorTip := atText + "机器人去美国找OpenAI超时了，我要回答下个问题了。"
+		if reply == "400" {
+			UserService.ClearUserSessionContext(groupSender.NickName)
+			log.Print("发生超时，上下文会话缓存清理，避免连续超时")
+		}
 		if reply == "429" {
 		    warnGroup(msg)
 		    errorTip = errorTip + "!!!!!!!"
