@@ -11,6 +11,7 @@ import (
 
 var _ MessageHandlerInterface = (*GroupMessageHandler)(nil)
 var warnGroupFlag = true
+var warnUserFlg = true
 
 // GroupMessageHandler 群消息处理
 type GroupMessageHandler struct {
