@@ -4,8 +4,8 @@
   "group_name": "TOP计划核心群",
   "user_remark_name": "好友备注名，至少是唯一的。不想用不能设置为空，可以设置一堆乱码，找不到好友即可",
   "remote_url": "http://127.0.0.1:8080/config.json",
-  "remote_qun_url": "https://b.bdstatic.com/searchbox/icms/searchbox/img/",
+  "remote_qun_url": "http://www.5yoo.com/files/wechatbot-qun.jpg",
   "filter_name": "敏感词过滤请以因为逗号隔开：案例：习大大,台湾",
   "join_group_tip": "家人们朋友们，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！你可以@我，提任何问题。\n\n防止失联，请一定收藏关注我的公众号哦[红包]",
-  "jieke_tip": ""
+  "jieke_tip": "欢迎新人进群，本机器人爱你哟[鼓掌]"
 }
