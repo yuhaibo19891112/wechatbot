@@ -37,10 +37,10 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 
 
     // 设置上下文，回复用户
-	downloadImg(config.Config.QunUrl, "qun.jpg")
-	img, err := os.Open("qun.jpg")
+	downloadImg(config.Config.QunUrl, "qun.png")
+	img, err := os.Open("qun.png")
 	if err != nil {
-		log.Printf("获取qun.jpg图片异常， %v", err)
+		log.Printf("获取qun.png图片异常， %v", err)
 	}
 	requestText := msg.Content
 	reply := "自动回复：由于线路限流，暂时关闭私聊功能，非常抱歉！\n \n不过我们仍然支持群聊，建议您邀请朋友一起关注【V起来】，然后拉机器人进群，进行群聊。或者直接加入官方群体>验，关注进群方式请点击：\n \nhttps://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww"
