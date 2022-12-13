@@ -10,7 +10,6 @@ import (
 )
 
 var _ MessageHandlerInterface = (*UserMessageHandler)(nil)
-var warnUserFlg = true
 
 // UserMessageHandler 私聊消息处理
 type UserMessageHandler struct {
@@ -87,17 +86,6 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	}
 	return err
 */
-}
-
-func warnFriend(msg *openwechat.Message) error{
-	self, err := msg.Bot.GetCurrentUser()
-	friends, err := self.Friends()
-	alarmUser := friends.GetByRemarkName(config.Config.AlarmUserName)
-	if alarmUser != nil && warnUserFlg{
-		alarmUser.SendText("keys已过期，尽快重置")
-		warnUserFlg = false
-	}
-	return err
 }
 
 func downloadImg(finalUrl string, savePath string)  {
