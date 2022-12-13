@@ -9,7 +9,7 @@ import (
 type UserServiceInterface interface {
 	GetUserSessionContext(userId string) string
 	SetUserSessionContext(userId string, question, reply string)
-	ClearUserSessionContext()
+	ClearUserSessionContext(userId string)
 }
 
 var _ UserServiceInterface = (*UserService)(nil)
@@ -41,6 +41,6 @@ func (s *UserService) SetUserSessionContext(userId string, question, reply strin
 }
 
 // ClearUserSessionContext 清理用户会话上下文文本，用于超时时清理
-func (s *UserService) ClearUserSessionContext() {
-	s.cache.Flush()
+func (s *UserService) ClearUserSessionContext(userId string) {
+	s.cache.Delete(userId)
 }
