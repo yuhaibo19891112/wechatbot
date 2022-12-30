@@ -19,7 +19,7 @@ type GroupMessageHandler struct {
 // handle 处理消息
 func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	// 自己加入群聊
-	joinTip := config.Config.JoinGroupTip
+	/*joinTip := config.Config.JoinGroupTip
 	if selfJoinGroup(msg) && joinTip != ""{
 		img, err := loadRemoteImg(config.Config.QunUrl, "qun.png")
 		if err != nil {
@@ -29,17 +29,21 @@ func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 		msg.ReplyText(joinTip)
 		msg.ReplyImage(img)
 		return nil
-	}
+	}*/
 	// 别人加入群聊
 	sender, _ := msg.Sender()
-	if joinGroup(msg) && config.Config.JiekeTip != "" && (strings.HasPrefix(sender.NickName, "V起来") || strings.HasPrefix(sender.NickName, "OKR之剑")) {
+	if joinGroup(msg) && config.Config.JiekeTip != "" && (strings.HasPrefix(sender.NickName, "V起来") || strings.HasPrefix(sender.NickName, "OKR之剑") || strings.HasPrefix(sender.NickName, "ytest")) {
+		img, err := loadRemoteImg(config.Config.QunUrl, "qun.png")
 		msg.ReplyText(config.Config.JiekeTip)
+		if err == nil {
+			msg.ReplyImage(img)
+		}
 		return nil
 	}
-	if msg.IsText() {
+	/*if msg.IsText() {
 		go g.ReplyText(msg)
 		return nil
-	}
+	}*/
 	return nil
 }
 
