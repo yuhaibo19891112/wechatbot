@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/869413421/wechatbot/config"
 	"github.com/869413421/wechatbot/service"
 	"github.com/eatmoreapple/openwechat"
 	"log"
@@ -42,7 +41,7 @@ func Handler(msg *openwechat.Message) {
 	}
 
 	// 好友申请
-	if msg.IsFriendAdd() {
+	/*if msg.IsFriendAdd() {
 		if config.Config.AutoPass {
 			friend, err := msg.Agree("你好我是【V起来】微信群聊版 ChatGPT机器人。\n 请进群体验，私聊小窗不再回复：https://mp.weixin.qq.com/s/n-zjrRsa8lNrzhZV9iFMww")
 			if err != nil {
@@ -61,8 +60,8 @@ func Handler(msg *openwechat.Message) {
 			}
 			return
 		}
-	}
+	}*/
 
 	// 私聊
-	handlers[UserHandler].handle(msg)
+	//handlers[UserHandler].handle(msg)
 }
