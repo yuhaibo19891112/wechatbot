@@ -31,6 +31,8 @@ type Configuration struct {
 	JoinGroupTip string `json:"join_group_tip"`
 	// 接客语
 	JiekeTip string `json:"jieke_tip"`
+	// 系统用户
+	SystemUser string `json:"system_user"`
 
 }
 
