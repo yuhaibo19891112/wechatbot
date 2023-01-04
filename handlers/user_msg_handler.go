@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
+	"time"
 )
 
 var _ MessageHandlerInterface = (*UserMessageHandler)(nil)
@@ -18,8 +20,7 @@ type UserMessageHandler struct {
 // handle 处理消息
 func (g *UserMessageHandler) handle(msg *openwechat.Message) error {
 	if msg.IsText() {
-		go g.ReplyText(msg)
-		return nil
+		return g.sendMsgCommand(msg)
 	}
 	return nil
 }
@@ -27,6 +28,26 @@ func (g *UserMessageHandler) handle(msg *openwechat.Message) error {
 // NewUserMessageHandler 创建私聊处理器
 func NewUserMessageHandler() MessageHandlerInterface {
 	return &UserMessageHandler{}
+}
+
+func (g *UserMessageHandler) sendMsgCommand(msg *openwechat.Message) error {
+	// 接收私聊消息
+	sender, _ := msg.Sender()
+	log.Printf("--------------user: %s", sender.NickName)
+	if !strings.Contains(config.Config.SystemUser, sender.NickName) {
+		return nil
+	}
+	if !strings.HasPrefix(msg.Content,"发消息：") {
+		return nil
+	}
+	msgCmmd := strings.ReplaceAll(msg.Content, "发消息：", "")
+	self, _ := msg.Bot.GetCurrentUser()
+	groups, _ := self.Groups()
+	for i := 0; i < len(groups); i++ {
+		time.Sleep(2 * time.Second)
+		groups[i].SendText(msgCmmd)
+	}
+	return nil
 }
 
 // ReplyText 发送文本消息到群
