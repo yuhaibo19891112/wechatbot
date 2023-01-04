@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+var systemUser = ""
+
 var _ MessageHandlerInterface = (*UserMessageHandler)(nil)
 
 // UserMessageHandler 私聊消息处理
@@ -19,7 +21,7 @@ type UserMessageHandler struct {
 
 // handle 处理消息
 func (g *UserMessageHandler) handle(msg *openwechat.Message) error {
-	if msg.IsText() {
+	if msg.IsText() || msg.IsPicture() {
 		return g.sendMsgCommand(msg)
 	}
 	return nil
@@ -31,21 +33,42 @@ func NewUserMessageHandler() MessageHandlerInterface {
 }
 
 func (g *UserMessageHandler) sendMsgCommand(msg *openwechat.Message) error {
+	log.Printf("-------sendMsg, user:%s", systemUser)
 	// 接收私聊消息
 	sender, _ := msg.Sender()
-	log.Printf("--------------user: %s", sender.NickName)
 	if !strings.Contains(config.Config.SystemUser, sender.NickName) {
 		return nil
 	}
-	if !strings.HasPrefix(msg.Content,"发消息：") {
+
+	if msg.IsText() && strings.EqualFold(msg.Content, "发送消息") {
+		log.Printf("-----------sendMsg, record")
+		systemUser = sender.NickName
 		return nil
 	}
-	msgCmmd := strings.ReplaceAll(msg.Content, "发消息：", "")
-	self, _ := msg.Bot.GetCurrentUser()
-	groups, _ := self.Groups()
-	for i := 0; i < len(groups); i++ {
-		time.Sleep(2 * time.Second)
-		groups[i].SendText(msgCmmd)
+
+	if msg.IsText() && strings.EqualFold(msg.Content, "结束发送消息") {
+		systemUser = ""
+		return nil
+	}
+	// 发送消息
+	if systemUser != "" && strings.EqualFold(systemUser, sender.NickName){
+		log.Printf("------------> 发送消息")
+		self, _ := msg.Bot.GetCurrentUser()
+		groups, _ := self.Groups()
+		if msg.IsText() {
+			for i := 0; i < len(groups); i++ {
+				time.Sleep(2 * time.Second)
+				groups[i].SendText(msg.Content)
+			}
+		}else if msg.IsPicture() {
+			msg.SaveFileToLocal("temp.png")
+			for i := 0; i < len(groups); i++ {
+				temp, _ := os.Open("temp.png")
+				time.Sleep(2 * time.Second)
+				groups[i].SendImage(temp)
+			}
+		}
+		systemUser = ""
 	}
 	return nil
 }
