@@ -1,6 +1,4 @@
 {
-  "api_key": "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",
-  "auto_pass": true,
   "group_name": "TOP计划核心群",
   "user_remark_name": "好友备注名，至少是唯一的。不想用不能设置为空，可以设置一堆乱码，找不到好友即可",
   "remote_url": "http://www.5yoo.com/files/wechatbot-config.json",

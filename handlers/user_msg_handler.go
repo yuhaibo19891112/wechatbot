@@ -53,7 +53,7 @@ func (g *UserMessageHandler) sendMsgCommand(msg *openwechat.Message) error {
 	// 发送消息
 	if systemUser != "" && strings.EqualFold(systemUser, sender.NickName) {
 		log.Printf("------------> 发送消息")
-		self, _ := msg.Bot.GetCurrentUser()
+		self, _ := msg.Bot().GetCurrentUser()
 		groups, _ := self.Groups()
 		if msg.IsText() {
 			for i := 0; i < len(groups); i++ {
