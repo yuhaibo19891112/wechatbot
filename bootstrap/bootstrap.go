@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-
+//var bot *openwechat.Bot
 
 func Run() {
 	//bot := openwechat.DefaultBot()

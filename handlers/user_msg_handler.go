@@ -1,17 +1,15 @@
 package handlers
 
 import (
-	"github.com/869413421/wechatbot/config"
 	"github.com/eatmoreapple/openwechat"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-	"time"
 )
 
-var systemUser = ""
+var msgCommand = ""
 
 var _ MessageHandlerInterface = (*UserMessageHandler)(nil)
 
@@ -22,7 +20,18 @@ type UserMessageHandler struct {
 // handle 处理消息
 func (g *UserMessageHandler) handle(msg *openwechat.Message) error {
 	if msg.IsText() || msg.IsPicture() {
-		return g.sendMsgCommand(msg)
+		content := msg.Content
+		log.Printf("msg:" + content)
+		// 配置群消息发送命令
+		if strings.EqualFold(SendMsgCommand, content) || strings.EqualFold(msgCommand, SendMsgCommand) {
+			log.Printf("send msg command")
+			return cmmdHandles[SendMsgCommand].handle(msg)
+		}
+		// 配置新闻发送命令
+		if strings.EqualFold(ConfigNews, content) || strings.EqualFold(msgCommand, ConfigNews) {
+			log.Printf("config news command")
+			return cmmdHandles[ConfigNews].handle(msg)
+		}
 	}
 	return nil
 }
@@ -30,47 +39,6 @@ func (g *UserMessageHandler) handle(msg *openwechat.Message) error {
 // NewUserMessageHandler 创建私聊处理器
 func NewUserMessageHandler() MessageHandlerInterface {
 	return &UserMessageHandler{}
-}
-
-func (g *UserMessageHandler) sendMsgCommand(msg *openwechat.Message) error {
-	log.Printf("-------sendMsg, user:%s", systemUser)
-	// 接收私聊消息
-	sender, _ := msg.Sender()
-	if !strings.Contains(config.Config.SystemUser, sender.NickName) {
-		return nil
-	}
-
-	if msg.IsText() && strings.EqualFold(msg.Content, "发送消息") {
-		log.Printf("-----------sendMsg, record")
-		systemUser = sender.NickName
-		return nil
-	}
-
-	if msg.IsText() && strings.EqualFold(msg.Content, "结束发送消息") {
-		systemUser = ""
-		return nil
-	}
-	// 发送消息
-	if systemUser != "" && strings.EqualFold(systemUser, sender.NickName) {
-		log.Printf("------------> 发送消息")
-		self, _ := msg.Bot().GetCurrentUser()
-		groups, _ := self.Groups()
-		if msg.IsText() {
-			for i := 0; i < len(groups); i++ {
-				time.Sleep(2 * time.Second)
-				groups[i].SendText(msg.Content)
-			}
-		} else if msg.IsPicture() {
-			msg.SaveFileToLocal("temp.png")
-			for i := 0; i < len(groups); i++ {
-				temp, _ := os.Open("temp.png")
-				time.Sleep(2 * time.Second)
-				groups[i].SendImage(temp)
-			}
-		}
-		systemUser = ""
-	}
-	return nil
 }
 
 // ReplyText 发送文本消息到群

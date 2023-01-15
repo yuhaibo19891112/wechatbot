@@ -6,15 +6,12 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"sync"
 	"time"
 )
 
 // Configuration 项目配置
 type Configuration struct {
-	// 自动通过好友
-	AutoPass bool `json:"auto_pass"`
 	// 远程文件地址
 	RemoteUrl string `json:"remote_url"`
 	// 敏感词
@@ -61,10 +58,6 @@ func SetToLocal() {
 	}
 
 	// 机器人判断
-	if Config.AutoPass != configBody.AutoPass {
-		log.Println("bot" + botNum + "：autoPass有变更! " + strconv.FormatBool(Config.AutoPass) + " ===> " + strconv.FormatBool(configBody.AutoPass))
-		Config.AutoPass = configBody.AutoPass
-	}
 
 	if Config.FilterName != configBody.FilterWords {
 		log.Println("bot" + botNum + "：filterWords有变更! " + Config.FilterName + " ===> " + configBody.FilterWords)
@@ -104,19 +97,12 @@ func LoadConfig() *Configuration {
 			log.Fatalf("decode config err: %v", err)
 			return
 		}
-
-		// 如果环境变量有配置，读取环境变量
-		AutoPass := os.Getenv("AutoPass")
-		if AutoPass == "true" {
-			Config.AutoPass = true
-		}
 	})
 	return Config
 }
 
 // RemoteConfigResponseBody 远程config.json参数体
 type RemoteConfigResponseBody struct {
-	AutoPass       bool   `json:"auto_pass"`
 	GroupName      string `json:"group_name"`
 	FilterWords    string `json:"filter_words"`
 	UserRemarkName string `json:"user_remark_name"`
