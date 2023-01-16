@@ -6,9 +6,11 @@ import (
 	"log"
 )
 
+var bot *openwechat.Bot
+
 func Run() {
 	//bot := openwechat.DefaultBot()
-	bot := openwechat.DefaultBot(openwechat.Desktop) // 桌面模式，上面登录不上的可以尝试切换这种模式
+	bot = openwechat.DefaultBot(openwechat.Desktop) // 桌面模式，上面登录不上的可以尝试切换这种模式
 
 	// 注册消息处理函数
 	bot.MessageHandler = handlers.Handler
@@ -27,4 +29,8 @@ func Run() {
 	}
 	// 阻塞主goroutine, 直到发生异常或者用户主动退出
 	bot.Block()
+}
+
+func GetChatBot() *openwechat.Bot {
+	return bot
 }

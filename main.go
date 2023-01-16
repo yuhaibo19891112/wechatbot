@@ -7,5 +7,6 @@ import (
 
 func main() {
 	go config.Timer()
+	//task.Run()
 	bootstrap.Run()
 }
