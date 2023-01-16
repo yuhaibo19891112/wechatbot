@@ -24,6 +24,8 @@ type Configuration struct {
 	JiekeTip string `json:"jieke_tip"`
 	// 系统用户
 	SystemUser string `json:"system_user"`
+	// 新闻早餐接口地址
+	NewsApi string   `json:"news_api"`
 }
 
 // Config 公共参数
@@ -78,6 +80,11 @@ func SetToLocal() {
 		log.Println("bot" + botNum + "：JiekeTip有变更! " + Config.JiekeTip + " ===> " + configBody.JiekeTip)
 		Config.JiekeTip = configBody.JiekeTip
 	}
+
+	if "" != configBody.NewsApi && Config.NewsApi != configBody.NewsApi {
+		log.Println("bot" + botNum + "：NewsApi有变更! " + Config.NewsApi + " ===> " + configBody.NewsApi)
+		Config.NewsApi = configBody.NewsApi
+	}
 }
 
 // LoadConfig 加载配置
@@ -112,6 +119,8 @@ type RemoteConfigResponseBody struct {
 	QunUrl string `json:"remote_qun_url"`
 	// 接客语
 	JiekeTip string `json:"jieke_tip"`
+	// 新闻早餐接口地址
+	NewsApi string   `json:"news_api"`
 }
 
 // RemoteConfigHttp 远程配置请求
