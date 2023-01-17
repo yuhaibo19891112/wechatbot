@@ -26,3 +26,20 @@ func (s *RulesConfigService) GetNewsRulesConfig() *model.RulesConfig {
 	}
 	return nil
 }
+
+func (s *RulesConfigService) UpdateNewsRulesConfig(timeCron string, user string, group string) {
+	if timeCron == "" && user == "" && group == "" {
+		return
+	}
+	updateCfg := model.RulesConfig{}
+	if timeCron != "" {
+		updateCfg.SendTime = timeCron
+	}
+	if user != "" {
+		updateCfg.SendUser = user
+	}
+	if group != "" {
+		updateCfg.SendGroup = group
+	}
+	s.getDB().Table(model.RulesConfigName).Where("rule_type=1").Updates(&updateCfg)
+}
