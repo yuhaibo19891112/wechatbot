@@ -21,7 +21,6 @@ type UserMessageHandler struct {
 func (g *UserMessageHandler) handle(msg *openwechat.Message) error {
 	if msg.IsText() || msg.IsPicture() {
 		content := msg.Content
-		log.Printf("msg:" + content)
 		// 配置群消息发送命令
 		if strings.EqualFold(SendMsgCommand, content) || strings.EqualFold(msgCommand, SendMsgCommand) {
 			log.Printf("send msg command")
