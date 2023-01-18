@@ -9,4 +9,5 @@ type RulesConfig struct {
 	SendTime     string
 	SendUser     string
 	SendGroup    string
+	Content      string
 }
