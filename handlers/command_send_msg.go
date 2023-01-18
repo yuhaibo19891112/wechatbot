@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"encoding/json"
 	"github.com/869413421/wechatbot/config"
+	"github.com/869413421/wechatbot/services"
+	"github.com/869413421/wechatbot/task"
 	"github.com/eatmoreapple/openwechat"
 	"log"
-	"os"
 	"strings"
-	"time"
 )
 
 var _ CommandHandlerInterface = (*CommandSendMsgHandler)(nil)
@@ -25,37 +26,25 @@ func (c CommandSendMsgHandler) handle(message *openwechat.Message) error {
 		return nil
 	}
 
+	content := message.Content
 	// 设置command（第一次设置command，用于第二次发送消息）
-	if strings.EqualFold(message.Content, SendMsgCommand) {
+	if strings.EqualFold(content, SendMsgCommand) {
 		msgCommand = SendMsgCommand
 		return nil
 	}
 
-	if strings.EqualFold(message.Content, "结束发送消息") {
-		msgCommand = ""
+	// 重置command
+	msgCommand = ""
+
+	// 执行任务
+	configNewsData := &ConfigNewsData{}
+	err := json.Unmarshal([]byte(content), configNewsData)
+	if err != nil {
 		return nil
 	}
-
-	// 开始发送消息
-	if strings.EqualFold(msgCommand, SendMsgCommand) {
-		msgCommand = ""
-		log.Printf("------------> 发送消息")
-		self, _ := message.Bot().GetCurrentUser()
-		groups, _ := self.Groups()
-		if message.IsText() {
-			for i := 0; i < len(groups); i++ {
-				time.Sleep(5 * time.Second)
-				groups[i].SendText(message.Content)
-			}
-		} else if message.IsPicture() {
-			message.SaveFileToLocal("temp.png")
-			for i := 0; i < len(groups); i++ {
-				temp, _ := os.Open("temp.png")
-				time.Sleep(5 * time.Second)
-				groups[i].SendImage(temp)
-			}
-		}
-	}
+	services.NewRulesConfigService().UpdateRulesConfig("2", configNewsData.TimeCron, configNewsData.SendUser, configNewsData.SendGroup, configNewsData.Content)
+	log.Printf("bot msg config cmd set")
+	task.CreateMsgTask()
 	return nil
 }
 
