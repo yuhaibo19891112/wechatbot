@@ -2,10 +2,7 @@ package handlers
 
 import (
 	"github.com/eatmoreapple/openwechat"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"os"
 	"strings"
 )
 
@@ -43,19 +40,4 @@ func NewUserMessageHandler() MessageHandlerInterface {
 // ReplyText 发送文本消息到群
 func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	return nil
-}
-
-func loadRemoteImg(finalUrl string, savePath string) (*os.File, error) {
-	//读取url的信息，存入到文件
-	resp, err := http.Get(finalUrl)
-	if err != nil {
-		log.Printf("get remote img error, %v", err)
-		return nil, err
-	}
-	defer resp.Body.Close()
-	content, err := ioutil.ReadAll(resp.Body)
-	if err == nil {
-		ioutil.WriteFile(savePath, content, 0666)
-	}
-	return os.Open(savePath)
 }
