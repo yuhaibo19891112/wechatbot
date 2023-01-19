@@ -13,3 +13,13 @@ func NewWeChatBotCron(cronStr string, cmd func()) *cron.Cron {
 
 	return crontab
 }
+
+func NewWeChatBotCronJob(cronStr string, job cron.Job) *cron.Cron {
+	crontab := cron.New(cron.WithSeconds())
+
+	crontab.AddJob(cronStr, job)
+
+	crontab.Start()
+
+	return crontab
+}
