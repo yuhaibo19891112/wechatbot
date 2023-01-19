@@ -5,6 +5,7 @@ import (
 	"github.com/869413421/wechatbot/database/model"
 	"gorm.io/gorm"
 	"log"
+	"strconv"
 )
 
 type RulesConfigService struct {
@@ -28,11 +29,20 @@ func (s *RulesConfigService) GetRulesConfig(ruleType string) *model.RulesConfig 
 	return nil
 }
 
-func (s *RulesConfigService) UpdateRulesConfig(ruleType string, timeCron string, user string, group string, content string) {
+func (s *RulesConfigService) GetRulesConfigList(ruleType string) []model.RulesConfig {
+	var config = make([]model.RulesConfig, 0)
+	affected := s.getDB().Table(model.RulesConfigName).Where("rule_type=" + ruleType).Find(&config).RowsAffected
+	if affected > 0 {
+		return config
+	}
+	return nil
+}
+
+func (s *RulesConfigService) UpdateRulesConfig(ruleType string, timeCron string, user string, group string, content string, ID int) {
 	if timeCron == "" && user == "" && group == "" && content == ""{
 		return
 	}
-	log.Printf("update: %s, %s, %s, %s", timeCron, user, group, content)
+	log.Printf("update: %s, %s, %s, %s, %d", timeCron, user, group, content, ID)
 	updateCfg := model.RulesConfig{}
 	if timeCron != "" {
 		updateCfg.SendTime = timeCron
@@ -46,5 +56,12 @@ func (s *RulesConfigService) UpdateRulesConfig(ruleType string, timeCron string,
 	if content != "" {
 		updateCfg.Content = content
 	}
-	s.getDB().Table(model.RulesConfigName).Where("rule_type=" + ruleType).Updates(&updateCfg)
+	tx := s.getDB().Table(model.RulesConfigName)
+	if ruleType != "" {
+		tx.Where("rule_type=" + ruleType)
+	}
+	if ID != 0 {
+		tx.Where("id=" + strconv.Itoa(ID))
+	}
+	tx.Updates(&updateCfg)
 }
