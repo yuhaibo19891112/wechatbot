@@ -17,6 +17,7 @@ type CommandConfigNewsHandler struct {
 }
 
 type ConfigNewsData struct {
+	ID       int
 	TimeCron string
 	// 发送对应还有或群名称，多个用;隔开
 	SendGroup string
@@ -55,7 +56,7 @@ func (c CommandConfigNewsHandler) handle(message *openwechat.Message) error {
 	if err != nil {
 		return nil
 	}
-	services.NewRulesConfigService().UpdateRulesConfig("1", configNewsData.TimeCron, configNewsData.SendUser, configNewsData.SendGroup, configNewsData.Content)
+	services.NewRulesConfigService().UpdateRulesConfig("1", configNewsData.TimeCron, configNewsData.SendUser, configNewsData.SendGroup, configNewsData.Content, configNewsData.ID)
 	log.Printf("bot news config cmd set")
 	task.CreateNewsTask()
 	return nil
