@@ -42,7 +42,7 @@ func (c CommandSendMsgHandler) handle(message *openwechat.Message) error {
 	if err != nil {
 		return nil
 	}
-	services.NewRulesConfigService().UpdateRulesConfig("2", configNewsData.TimeCron, configNewsData.SendUser, configNewsData.SendGroup, configNewsData.Content)
+	services.NewRulesConfigService().UpdateRulesConfig("2", configNewsData.TimeCron, configNewsData.SendUser, configNewsData.SendGroup, configNewsData.Content, 0)
 	log.Printf("bot msg config cmd set")
 	task.CreateMsgTask()
 	return nil
