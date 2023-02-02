@@ -47,11 +47,11 @@ func joinGroup(m *openwechat.Message) bool {
 }
 
 func findJoinUserName(content string) string {
-	reg := regexp.MustCompile(`^"[^"]*"`)
+	reg := regexp.MustCompile(`^"[^"]*"通过`)
 	match := reg.FindStringSubmatch(content)
 	if len(match) > 0 {
 		temp := strings.ReplaceAll(match[0], "\" ", "")
-		temp = strings.ReplaceAll(temp, "\"", "")
+		temp = strings.ReplaceAll(temp, "\"通过", "")
 		return "“" + temp + "”"
 	}
 	return ""
