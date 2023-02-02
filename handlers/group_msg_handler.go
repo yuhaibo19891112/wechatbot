@@ -4,6 +4,7 @@ import (
 	"github.com/869413421/wechatbot/common"
 	"github.com/869413421/wechatbot/config"
 	"github.com/eatmoreapple/openwechat"
+	"regexp"
 	"strings"
 )
 
@@ -18,8 +19,11 @@ func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 	// 别人加入群聊
 	sender, _ := msg.Sender()
 	if joinGroup(msg) && config.Config.JiekeTip != "" && (strings.HasPrefix(sender.NickName, "V起来") || strings.HasPrefix(sender.NickName, "OKR之剑") || strings.HasPrefix(sender.NickName, "ytest")) {
+		// 只查找通过二维码扫描进来的用户
+		userName := findJoinUserName(msg.Content)
+		jiekeTip := strings.ReplaceAll(config.Config.JiekeTip, "xxx", userName)
 		img, err := common.LoadRemoteImg(config.Config.QunUrl, "qun.png")
-		msg.ReplyText(config.Config.JiekeTip)
+		msg.ReplyText(jiekeTip)
 		if err == nil {
 			msg.ReplyImage(img)
 		}
@@ -40,4 +44,13 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 
 func joinGroup(m *openwechat.Message) bool {
 	return m.IsSystem() && (strings.Contains(m.Content, "加入了群聊") || strings.Contains(m.Content, "加入群聊")) && m.IsSendByGroup()
+}
+
+func findJoinUserName(content string) string {
+	reg := regexp.MustCompile(`^"[^"]*"`)
+	match := reg.FindStringSubmatch("\" VBot\"通过扫描\"OKR之剑\"分享的二维码加入群聊")
+	if len(match) > 0 {
+		return match[0]
+	}
+	return ""
 }
