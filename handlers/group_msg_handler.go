@@ -50,7 +50,9 @@ func findJoinUserName(content string) string {
 	reg := regexp.MustCompile(`^"[^"]*"`)
 	match := reg.FindStringSubmatch(content)
 	if len(match) > 0 {
-		return match[0]
+		temp := strings.ReplaceAll(match[0], "\" ", "")
+		temp = strings.ReplaceAll(temp, "\"", "")
+		return "“" + temp + "”"
 	}
 	return ""
 }
