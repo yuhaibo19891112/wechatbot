@@ -6,6 +6,6 @@
   "filter_name": "敏感词过滤请以因为逗号隔开：案例：习大大,台湾",
   "join_group_tip": "家人们朋友们，我是【V起来】微信群聊版 ChatGPT机器人。很高兴和大家见面！你可以@我，提任何问题。\n\n防止失联，请一定收藏关注我的公众号哦[红包]",
   "jieke_tip": "",
-  "system_user": "meatball.xi,主公权,给点阳光就灿烂,喻大领,赵磊",
+  "system_user": "meatball.xi,主公权,给点阳光就灿烂,喻大领,赵磊,pageqiu",
   "news_api": "https://chat.5yoo.com/utils/api/v1/news/query"
 }
