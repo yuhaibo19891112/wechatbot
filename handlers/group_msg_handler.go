@@ -48,7 +48,7 @@ func joinGroup(m *openwechat.Message) bool {
 
 func findJoinUserName(content string) string {
 	reg := regexp.MustCompile(`^"[^"]*"`)
-	match := reg.FindStringSubmatch("\" VBot\"通过扫描\"OKR之剑\"分享的二维码加入群聊")
+	match := reg.FindStringSubmatch(content)
 	if len(match) > 0 {
 		return match[0]
 	}
