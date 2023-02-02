@@ -50,8 +50,17 @@ func findJoinUserName(content string) string {
 	reg := regexp.MustCompile(`^"[^"]*"通过`)
 	match := reg.FindStringSubmatch(content)
 	if len(match) > 0 {
-		temp := strings.ReplaceAll(match[0], "\" ", "")
-		temp = strings.ReplaceAll(temp, "\"通过", "")
+		temp :=strings.ReplaceAll(match[0], "\"", "")
+		temp = strings.TrimSpace(temp)
+		temp = strings.ReplaceAll(temp, "通过", "")
+		return "“" + temp + "”"
+	}
+
+	reg2 := regexp.MustCompile(`邀请"[^"]*"加入`)
+	match2 := reg2.FindStringSubmatch(content)
+	if len(match2) > 0 {
+		temp := strings.ReplaceAll(match2[0], "邀请\"", "")
+		temp = strings.ReplaceAll(temp, "\"加入", "")
 		return "“" + temp + "”"
 	}
 	return ""
