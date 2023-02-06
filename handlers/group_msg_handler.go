@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/869413421/wechatbot/common"
 	"github.com/869413421/wechatbot/config"
 	"github.com/eatmoreapple/openwechat"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -22,7 +22,9 @@ func (g *GroupMessageHandler) handle(msg *openwechat.Message) error {
 		// 只查找通过二维码扫描进来的用户
 		userName := findJoinUserName(msg.Content)
 		jiekeTip := strings.ReplaceAll(config.Config.JiekeTip, "xxx", userName)
-		img, err := common.LoadRemoteImg(config.Config.QunUrl, "qun.png")
+
+		img, err := os.Open(config.Config.QunUrl)
+
 		msg.ReplyText(jiekeTip)
 		if err == nil {
 			msg.ReplyImage(img)
@@ -50,7 +52,7 @@ func findJoinUserName(content string) string {
 	reg := regexp.MustCompile(`^"[^"]*"通过`)
 	match := reg.FindStringSubmatch(content)
 	if len(match) > 0 {
-		temp :=strings.ReplaceAll(match[0], "\"", "")
+		temp := strings.ReplaceAll(match[0], "\"", "")
 		temp = strings.TrimSpace(temp)
 		temp = strings.ReplaceAll(temp, "通过", "")
 		return temp
